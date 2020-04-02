@@ -36,12 +36,12 @@ for i in range(number_of_enemies):
     enemy_x.append(random.randint(0, 740))
     enemy_y.append(random.randint(50, 200))
     enemy_x_change.append(4)
-    enemy_y_change.append(10)
+    enemy_y_change.append(5)
 
 # bullet
 bullet_icon = pygame.image.load("images/bullet.png")
 bullet_x = 0
-bullet_y = 530
+bullet_y = player_y
 bullet_x_change = 4
 bullet_y_change = 5
 bullet_state = "ready"  # ready or fire
@@ -52,6 +52,7 @@ font = pygame.font.Font('freesansbold.ttf', 32)
 text_x = 10
 text_y = 10
 game_over_font = pygame.font.Font('freesansbold.ttf', 32)
+over = False
 
 
 def show_score(x, y):
@@ -92,10 +93,10 @@ def game_over():
 running = True
 
 while running:
-    # screen color
-    # screen.fill((50, 10, 30))
+
     # background image
     screen.blit(background, (0, 0))
+
     for event in pygame.event.get():
         # window close event
         if event.type == pygame.QUIT:
@@ -139,12 +140,12 @@ while running:
     for i in range(number_of_enemies):
         # game over
         game_over_distance = math.sqrt(
-            math.pow(enemy_x[i] - (player_x + 32), 2) + math.pow(enemy_y[i] - (player_y - 64), 2)
+            math.pow(enemy_x[i] - player_x, 2) + math.pow(enemy_y[i] + 64 - player_y, 2)
         )
-        if game_over_distance < 10:
+        if game_over_distance < 25:
             for j in range(number_of_enemies):
                 enemy_y[j] = 2000
-            game_over()
+            over = True
             break
         # enemy movement
         enemy_x[i] += enemy_x_change[i]
@@ -161,7 +162,7 @@ while running:
         if collision:
             collision_sound = mixer.Sound("songs/explosion.wav")
             collision_sound.play()
-            bullet_y = 436
+            bullet_y = player_y
             bullet_state = "ready"
             score_val += 1
             enemy_x[i] = random.randint(0, 736)
@@ -169,11 +170,14 @@ while running:
 
     # bullet movement
     if bullet_y <= 0:
-        bullet_y = 436
+        bullet_y = player_y
         bullet_state = "ready"
     if bullet_state is "fire":
         fire_bullet(bullet_x, bullet_y)
         bullet_y -= bullet_y_change
+
+    if over:
+        game_over()
 
     # show score
     show_score(text_x, text_y)
