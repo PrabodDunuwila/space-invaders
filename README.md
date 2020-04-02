@@ -2,7 +2,7 @@
 
 **Controls**
 
- - Use the controls left, right, up and down arrow keys to move the spaceship.
+ - Use the controls left and right arrow keys to move the spaceship.
  - Use space bar to shoot the enemies.
  
  **Score**
